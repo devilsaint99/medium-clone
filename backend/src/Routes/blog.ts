@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { jwt } from 'hono/jwt'
-import { number, z } from "zod";
 import { getPrisma } from "../prismaFn";
 import { pcs, pes } from "@devilsaint/medium-clone-common"
+import { Prisma } from "@prisma/client";
 
 type Bindings= {
     JWT_SECRET : string
@@ -50,7 +50,9 @@ blog.post('/', async (c)=>{
                 data:{
                     userId:payload.id,
                     title: postData.title,
-                    Post: postData.post
+                    Post: postData.post,
+                    LastUpdated: new Date()
+                    
                 }
             })
             return c.json({message: "post created"})
@@ -98,21 +100,34 @@ blog.put('/', async (c)=>{
    
 })
 blog.get('/bulk', async (c)=>{
-    console.log("errror")
     const prisma = getPrisma(c.env.DATABASE_URL)
-    const bulkPost = await prisma.posts.findMany()
+    const bulkPost = await prisma.posts.findMany({
+        include:{
+            user:{
+                select:{
+                    firstName: true
+                }
+            }
+        }
+    })
     return c.json(bulkPost)
 })
 
 
 blog.get('/:id', async (c)=>{
     try{
-        console.log("hello")
         const paramId = parseInt(c.req.param('id'))
         const prisma =  getPrisma(c.env.DATABASE_URL)
         const blogData = await prisma.posts.findFirst({
             where:{
                 id: paramId
+            },
+            include:{
+                user:{
+                    select:{
+                        firstName:true
+                    }
+                }
             }
         })
     

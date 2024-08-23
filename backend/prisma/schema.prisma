@@ -27,6 +27,7 @@ model Posts {
   id Int @id @default(autoincrement())
   title String
   Post String
+  LastUpdated DateTime @db.Date
   userId Int
   user Users @relation(references: [id], fields: [userId])
 }

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Posts" ALTER COLUMN "LastUpdated" SET DATA TYPE DATE;

@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { sign, jwt, JwtVariables } from "hono/jwt";
-import { z } from 'zod'
 import { getPrisma } from "../prismaFn";
 import { sis, sus } from "@devilsaint/medium-clone-common";
 
@@ -13,8 +12,12 @@ type Bindings= {
 const user = new Hono<{Bindings: Bindings}>();
 
 
-//zod schemas
-
+user.get('*', (c,next)=>{
+    const jwtVar = jwt({
+        secret: c.env.JWT_SECRET
+    })
+    return jwtVar(c, next)
+})
 
 
 
@@ -79,7 +82,8 @@ user.post('/signin', async (c)=>{
             if(userQuery){
                 const payload = {
                     id: userQuery.id,
-                    email: userQuery.email
+                    email: userQuery.email,
+                    firstName: userQuery.firstName
                 }
                 const token = await sign(payload, c.env.JWT_SECRET)
 
@@ -88,20 +92,24 @@ user.post('/signin', async (c)=>{
             else{
                 return c.json({
                     message: "Incorrect email/password"
-                })
+                }, 401)
             }
         }
         else{
             return c.json({
-                message: "Error Occured Signup"
+                message: "Input validation error"
             }, 400)
         }
     }
     catch{
         return c.json({
             message:"Error Occured Signin"
-        })
+        }, 400)
     }
+})
+
+user.get("/", (c)=>{
+    return c.json({"message":"already signed in"})
 })
 
 export default user;
