@@ -20,7 +20,7 @@ export const SigninAuth = ()=>{
             headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
         }).then(function(response){
             if(response.status === 200){
-                navigate("/")
+                navigate("/blogs")
             }
         })
     }
@@ -36,7 +36,7 @@ export const SigninAuth = ()=>{
                 if(response.status === 200){
                     const jwt = response.data.message
                     localStorage.setItem('token', jwt)
-                    navigate("/")
+                    navigate("/blogs")
                 }
             }).catch(function(error){
                 toast.error(error.response.data.message)

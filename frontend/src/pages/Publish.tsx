@@ -37,7 +37,7 @@ export const Publish = ()=>{
             headers: {"Authorization": `Bearer ${localStorage.getItem("token")}`}
         }).then(function(response){
             if(response.status === 200){
-                navigate("/")
+                navigate("/blogs")
             }
         })
 

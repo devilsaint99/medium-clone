@@ -47,7 +47,6 @@ export const useBlogs = ()=>{
             if(response.status === 200){
                 setBlogs(response.data)
                 setLoading(false)
-                console.log(response.data)
                 setAuth(true)
             }
             return response
