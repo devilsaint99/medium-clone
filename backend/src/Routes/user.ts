@@ -13,10 +13,12 @@ const user = new Hono<{Bindings: Bindings}>();
 
 
 user.get('*', (c,next)=>{
+    
     const jwtVar = jwt({
         secret: c.env.JWT_SECRET
     })
     return jwtVar(c, next)
+    
 })
 
 

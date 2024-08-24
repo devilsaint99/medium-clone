@@ -2,6 +2,7 @@ import { Avatar } from "./Avatar"
 import { decode } from "hono/jwt"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 interface IButtonType {
     buttonType: string,
@@ -16,9 +17,16 @@ export const AppBar = ({buttonType, onClick}: IButtonType)=>{
 
 
     function getCurrentLoggedInUser(){
-        const payloadData = decode(localStorage.getItem('token') || "")
-        const firstName: any = payloadData.payload.firstName
-        setUser(firstName)
+        try{
+            const payloadData = decode(localStorage.getItem('token') || "")
+            const firstName: any = payloadData.payload.firstName
+            setUser(firstName)
+        }
+        catch(e){
+            toast("Please login")
+            navigate("/signin")
+        }
+        
     }
     useEffect(()=>{
         getCurrentLoggedInUser()
